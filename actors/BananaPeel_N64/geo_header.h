@@ -1,0 +1,12 @@
+extern const GeoLayout BananaPeel_N64_geo[];
+extern Lights1 BananaPeel_N64_f3dlite_material_lights;
+extern Lights1 BananaPeel_N64_f3dlite_material_001_lights;
+extern Vtx BananaPeel_N64_BananaPeel_N64_mesh_layer_1_vtx_0[347];
+extern Gfx BananaPeel_N64_BananaPeel_N64_mesh_layer_1_tri_0[];
+extern Vtx BananaPeel_N64_BananaPeel_N64_mesh_layer_1_vtx_1[74];
+extern Gfx BananaPeel_N64_BananaPeel_N64_mesh_layer_1_tri_1[];
+extern Gfx mat_BananaPeel_N64_f3dlite_material[];
+extern Gfx mat_revert_BananaPeel_N64_f3dlite_material[];
+extern Gfx mat_BananaPeel_N64_f3dlite_material_001[];
+extern Gfx mat_revert_BananaPeel_N64_f3dlite_material_001[];
+extern Gfx BananaPeel_N64_BananaPeel_N64_mesh_layer_1_with_revert[];
