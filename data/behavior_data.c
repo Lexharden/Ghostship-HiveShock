@@ -6,6 +6,9 @@
 #include "game/object_list_processor.h"
 #include "game/interaction.h"
 #include "game/behavior_actions.h"
+#include "game/hiveshock_banana.h"
+#include "game/hiveshock_effects.h"
+#include "game/hiveshock_shotgun.h"
 #include "game/mario_actions_cutscene.h"
 #include "game/mario_misc.h"
 #include "game/object_helpers.h"
@@ -5836,3 +5839,59 @@ const BehaviorScript bhvIntroScene[] = {
 };
 
 
+
+const BehaviorScript bhvBananaPeel[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_banana_peel_loop),
+    END_LOOP(),
+};
+
+// HiveShock: Chuckya that never loses track of Mario (home follows him every frame).
+const BehaviorScript bhvHiveChuckya[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_HOLDABLE | OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    LOAD_ANIMATIONS(oAnimations, chuckya_seg8_anims_0800C070),
+    ANIMATE(5),
+    SET_INT(oInteractType, INTERACT_GRABBABLE),
+    SET_HITBOX(/*Radius*/ 150, /*Height*/ 100),
+    SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 30, /*Gravity*/ -400, /*Bounciness*/ -50, /*Drag strength*/ 1000, /*Friction*/ 1000, /*Buoyancy*/ 200, /*Unused*/ 0, 0),
+    SPAWN_OBJ(/*Model*/ MODEL_NONE, /*Behavior*/ bhvChuckyaAnchorMario),
+    SET_INT(oNumLootCoins, 0),
+    SET_INT(oIntangibleTimer, 0),
+    SET_HOME(),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_hive_chuckya_loop),
+    END_LOOP(),
+};
+
+// HiveShock: poison mushroom that chases Mario and kills on touch.
+const BehaviorScript bhvHivePoisonMushroom[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    OR_INT(oFlags, (OBJ_FLAG_COMPUTE_DIST_TO_MARIO | OBJ_FLAG_SET_FACE_YAW_TO_MOVE_YAW | OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    BILLBOARD(),
+    SET_FLOAT(oGraphYOffset, 30),
+    SET_OBJ_PHYSICS(/*Wall hitbox radius*/ 30, /*Gravity*/ -400, /*Bounciness*/ -50, /*Drag strength*/ 1000, /*Friction*/ 1000, /*Buoyancy*/ 200, /*Unused*/ 0, 0),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_hive_poison_mushroom_loop),
+    END_LOOP(),
+};
+
+// HiveShock: shotgun thrown by a viewer; Mario equips it by walking over it.
+const BehaviorScript bhvShotgunPickup[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_shotgun_pickup_loop),
+    END_LOOP(),
+};
+
+// HiveShock: the shotgun Mario carries.
+const BehaviorScript bhvShotgunHeld[] = {
+    BEGIN(OBJ_LIST_DEFAULT),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_shotgun_held_loop),
+    END_LOOP(),
+};

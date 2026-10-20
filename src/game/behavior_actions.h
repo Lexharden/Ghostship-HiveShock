@@ -56,6 +56,7 @@ extern_s void bhv_cannon_barrel_loop(void);
 extern_s void bhv_cannon_base_unused_loop(void);
 extern_s void common_anchor_mario_behavior(f32 sp28, f32 sp2C, s32 sp30);
 extern_s void bhv_chuckya_loop(void);
+extern_s void bhv_hive_chuckya_loop(void);
 extern_s void bhv_chuckya_anchor_mario_loop(void);
 extern_s void bhv_rotating_platform_loop(void);
 extern_s void bhv_wf_breakable_wall_loop(void);
