@@ -1824,6 +1824,49 @@ void do_cutscene_handler(void) {
 
 #define STR_X (ROM_JP ? 53 : 38)
 #define STR_Y (ROM_JP ? 136 : 142)
+#define SIGNATURE_X 150
+#define SIGNATURE_Y 34
+
+// ASCII -> SM64 text encoding (values from charmap.txt)
+static void ascii_to_sm64(const char *src, u8 *dst, size_t max) {
+    size_t n = 0;
+    for (; *src && n + 1 < max; src++) {
+        char c = *src;
+        u8 v;
+        if (c >= '0' && c <= '9') {
+            v = c - '0';
+        } else if (c >= 'A' && c <= 'Z') {
+            v = 0x0A + (c - 'A');
+        } else if (c >= 'a' && c <= 'z') {
+            v = 0x24 + (c - 'a');
+        } else {
+            switch (c) {
+                case '.':  v = 0x3F; break;
+                case ',':  v = 0x6F; break;
+                case '\'': v = 0x3E; break;
+                case '-':  v = 0x9F; break;
+                case ':':  v = 0xE6; break;
+                case '!':  v = 0xF2; break;
+                case '?':  v = 0xF4; break;
+                case '\n': v = 0xFE; break;
+                default:   v = 0x9E; break; // space
+            }
+        }
+        dst[n++] = v;
+    }
+    dst[n] = 0xFF; // terminator
+}
+
+static const char *sPeachLetterText =
+    "Dear Mario:\n"
+    "Your stream is\n"
+    "waiting for you!\n"
+    "Come to the castle.\n"
+    "\n"
+    "Yours truly--\n"
+    "El cuaco c la come";
+
+static const char *sPeachLetterSignature = "Mint";
 
 // "Dear Mario" message handler
 void print_peach_letter_message(void) {
@@ -1845,7 +1888,12 @@ void print_peach_letter_message(void) {
     }
 #endif
     dialog = GameEngine_LoadDialog(gDialogID);
-    str = segmented_to_virtual(dialog->str);
+    static u8 customStr[256];
+    static u8 signatureStr[16];
+    (void) dialog;
+    ascii_to_sm64(sPeachLetterText, customStr, sizeof(customStr));
+    ascii_to_sm64(sPeachLetterSignature, signatureStr, sizeof(signatureStr));
+    str = customStr;
 
     FrameInterpolation_RecordOpenChild("print_peach_letter_message", 0);
     create_dl_translation_matrix(MENU_MTX_PUSH, 97.0f, 118.0f, 0);
@@ -1864,8 +1912,11 @@ void print_peach_letter_message(void) {
     } else {
         gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, 255);
         gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
+        // The original "Peach" signature is a texture; draw "Mint" as text in the same pink instead.
+        gSPDisplayList(gDisplayListHead++, dl_ia_text_begin);
         gDPSetEnvColor(gDisplayListHead++, 200, 80, 120, gCutsceneMsgFade);
-        gSPDisplayList(gDisplayListHead++, castle_grounds_seg7_us_dl_0700F2E8);
+        print_generic_string(SIGNATURE_X, SIGNATURE_Y, signatureStr);
+        gSPDisplayList(gDisplayListHead++, dl_ia_text_end);
     }
 
     // at the start/end of message, reset the fade.
