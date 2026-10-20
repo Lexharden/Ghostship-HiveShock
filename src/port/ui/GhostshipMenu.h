@@ -23,6 +23,7 @@ class GhostshipMenu : public Ship::Menu {
     WidgetInfo& AddWidget(WidgetPath& pathInfo, std::string widgetName, WidgetType widgetType);
     void AddMenuSettings();
     void AddMenuEnhancements();
+    void AddMenuNetwork();
     void AddMenuDevTools();
     void AddMenuRando();
     void AddMenuShaderSettings();
